@@ -1,0 +1,1769 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=0.75">
+    <title>德洋恩普 - 门禁电锁网站</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft Yahei", sans-serif;
+        }
+        ul { list-style: none; }
+        a { text-decoration: none; color: inherit; }
+        img { max-width: 100%; display: block; }
+        /* 轮播图比例：2 表示 2:1；如需改为 3.25:1，则把 2 改为 3.25 */
+        :root { --banner-ratio: 2; }
+        .btn {
+            display: inline-block;
+            padding: 8px 25px;
+            border: 1px solid #333;
+            background: #fff;
+            color: #333;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            background: #333;
+            color: #fff;
+        }
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0,0,0,0.18);
+            z-index: 999;
+            box-shadow: none;
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(2px);
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+        }
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .logo img {
+            width: 35px;
+            height: 35px;
+        }
+        .logo-text {
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.35);
+        }
+        .nav-list {
+            display: flex;
+            gap: 30px;
+            position: relative;
+        }
+        .nav-item {
+            position: relative;
+            font-size: 13px;
+            color: #fff;
+            cursor: pointer;
+            padding: 5px 0;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.35);
+        }
+        .nav-item:hover { color: #fff; opacity: 0.82; }
+        .submenu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: #fff;
+            min-width: 150px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            display: none;
+            z-index: 10;
+            color: #333;
+            text-shadow: none;
+        }
+        .nav-item:hover .submenu { display: block; }
+        .submenu li {
+            padding: 10px 15px;
+            font-size: 12px;
+            transition: background 0.2s;
+            color: #333;
+            text-shadow: none;
+        }
+        .submenu li:hover {
+            background: #f0f0f0;
+            color: #007bff;
+        }
+        .nav-icons {
+            display: flex;
+            gap: 15px;
+        }
+        .nav-icons a {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            filter: drop-shadow(0 1px 3px rgba(0,0,0,0.35));
+        }
+        .banner {
+            margin-top: 0;
+            height: calc(100vw / var(--banner-ratio));
+            aspect-ratio: var(--banner-ratio) / 1;
+            background: #1a2238;
+            position: relative;
+            overflow: hidden;
+        }
+        .banner-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+            display: flex;
+            align-items: center;
+            padding-left: 15%;
+            color: #fff;
+        }
+        .banner-slide.active { opacity: 1; }
+        .banner-tag {
+            background: #ff3333;
+            color: #fff;
+            font-size: 12px;
+            padding: 3px 12px;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        .banner-title {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+        .banner-desc {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-bottom: 20px;
+        }
+        .banner-img {
+          position: absolute;
+		  top: 0;
+		  left: 0;
+		  width: 100%;
+		  height: 100%;
+          object-fit: cover;
+          object-position: center center;
+        }
+        .banner-dots {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+        }
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .dot.active { background: #fff; }
+        .section {
+            padding: 60px 20px;
+        }
+        .section-title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .section-title h2 {
+            font-size: 22px;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .section-title p {
+            font-size: 13px;
+            color: #999;
+        }
+        .product-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        .product-tab {
+            font-size: 12px;
+            color: #666;
+            cursor: pointer;
+            padding-bottom: 5px;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        .product-tab.active {
+            color: #007bff;
+            border-color: #007bff;
+        }
+        /* 每个标签对应一组产品，默认隐藏 */
+        .product-group {
+            display: none;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .product-group.active {
+            display: block;
+        }
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+        }
+        .product-card {
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            padding: 15px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.5s ease;
+        }
+        .product-card.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .product-card img {
+            width: 100%;
+            height: 100px;
+            object-fit: contain;
+            margin-bottom: 10px;
+        }
+        .product-name {
+            font-size: 12px;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .product-model {
+            font-size: 10px;
+            color: #999;
+        }
+        .product-more-items {
+            display: none;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+            max-width: 1000px;
+            margin: 25px auto 0;
+        }
+        .product-more-items.show {
+            display: grid;
+        }
+        .more-btn {
+            display: block;
+            width: fit-content;
+            margin: 30px auto 0;
+            border: 1px solid #007bff;
+            color: #007bff;
+            background: #fff;
+            border-radius: 20px;
+            padding: 6px 25px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .more-btn:hover {
+            background: #007bff;
+            color: #fff;
+        }
+        .about-section {
+            background: #1a1a2e;
+            color: #fff;
+        }
+        .about-section .section-title h2 { color: #fff; }
+        .about-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        .about-tab {
+            font-size: 12px;
+            color: #aaa;
+            cursor: pointer;
+            padding-bottom: 5px;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        .about-tab.active {
+            color: #fff;
+            border-color: #fff;
+        }
+        .about-content {
+            max-width: 600px;
+            margin: 0 auto;
+            display: none;
+            color: #ccc;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+        .about-content.active {
+            display: block;
+        }
+        .video-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #000;
+            border-radius: 5px;
+            overflow: hidden;
+            opacity: 0;
+            transform: scale(0.95);
+            transition: all 0.5s ease;
+        }
+        .video-container.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .video-container video {
+            width: 100%;
+            display: block;
+        }
+        .news-section {
+            background: #222;
+            color: #fff;
+        }
+        .news-section .section-title h2 { color: #fff; }
+        .news-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        .news-tab {
+            font-size: 12px;
+            color: #aaa;
+            cursor: pointer;
+            padding-bottom: 5px;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        .news-tab.active {
+            color: #007bff;
+            border-color: #007bff;
+        }
+        .news-grid {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+        }
+        .news-card {
+            display: flex;
+            gap: 15px;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.5s ease;
+        }
+        .news-card.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .news-img {
+            width: 220px;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 3px;
+        }
+        .news-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .news-title {
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+        .news-desc {
+            font-size: 11px;
+            color: #aaa;
+            line-height: 1.4;
+        }
+        .news-date {
+            font-size: 10px;
+            color: #666;
+            margin-top: auto;
+        }
+        .news-more-items {
+            display: none;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            max-width: 1000px;
+            margin: 25px auto 0;
+        }
+        .news-more-items.show {
+            display: grid;
+        }
+        .quick-links {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+            padding: 40px 20px;
+        }
+        .quick-link-item {
+            text-align: center;
+            padding: 20px;
+            border: 1px solid #eee;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+            cursor: pointer;
+        }
+        .quick-link-item:hover {
+            border-color: #007bff;
+            transform: translateY(-5px);
+        }
+        .quick-link-item.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .quick-link-icon {
+            width: 30px;
+            height: 30px;
+            margin: 0 auto 15px;
+            color: #007bff;
+        }
+        .quick-link-title {
+            font-size: 13px;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .quick-link-desc {
+            font-size: 10px;
+            color: #999;
+        }
+        .footer {
+            background: #333;
+            color: #fff;
+            padding: 40px 20px 20px;
+        }
+        .footer-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 3fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        .footer-logo img {
+            width: 35px;
+            height: 35px;
+            filter: brightness(0) invert(1);
+        }
+        .footer-logo-text {
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .footer-contact {
+            font-size: 12px;
+            line-height: 1.8;
+            color: #aaa;
+        }
+        .footer-links {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            font-size: 11px;
+            color: #aaa;
+        }
+        .footer-links a:hover { color: #fff; }
+        .footer-qrcodes {
+            display: flex;
+            gap: 15px;
+        }
+        .qrcode-item {
+            text-align: center;
+        }
+        .qrcode-item img {
+            width: 80px;
+            height: 80px;
+            background: #fff;
+            padding: 3px;
+            margin-bottom: 5px;
+        }
+        .qrcode-text {
+            font-size: 10px;
+            color: #aaa;
+        }
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #444;
+            font-size: 10px;
+            color: #666;
+        }
+        .sidebar {
+            position: fixed;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 99;
+        }
+        .sidebar-btn {
+            width: 35px;
+            height: 35px;
+            background: #fff;
+            border: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .sidebar-btn:hover {
+            background: #007bff;
+            color: #fff;
+            border-color: #007bff;
+        }
+        .back-to-top {
+            position: fixed;
+            right: 15px;
+            bottom: 20px;
+            width: 35px;
+            height: 35px;
+            background: #fff;
+            border: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s;
+            z-index: 99;
+        }
+        .back-to-top:hover {
+            background: #007bff;
+            color: #fff;
+            border-color: #007bff;
+        }
+
+        /* 移动端菜单按钮：PC端默认隐藏，不影响原PC布局 */
+        .mobile-menu-toggle {
+            display: none;
+            width: 34px;
+            height: 34px;
+            border: none;
+            background: transparent;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 0;
+        }
+        .mobile-menu-toggle span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: #fff;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.35);
+        }
+        .mobile-menu-toggle.active span {
+            background: #333;
+            box-shadow: none;
+        }
+        .mobile-menu-mask {
+            display: none;
+        }
+        @media (max-width: 768px) {
+            html, body {
+                width: 100%;
+                max-width: 100%;
+                overflow-x: hidden;
+            }
+            body {
+                -webkit-text-size-adjust: 100%;
+            }
+            .header {
+                min-height: 64px;
+                background: rgba(0,0,0,0.18);
+                box-shadow: none;
+            }
+            .nav-container {
+                width: 100%;
+                min-height: 64px;
+                padding: 12px 16px;
+                justify-content: center;
+                position: relative;
+            }
+            .logo {
+                justify-content: center;
+                text-align: center;
+            }
+            .logo-text {
+                font-size: 15px;
+                line-height: 1.25;
+            }
+            .mobile-menu-toggle {
+                display: flex;
+                position: absolute;
+                left: 16px;
+                top: 50%;
+                transform: translateY(-50%);
+                z-index: 1002;
+            }
+            .mobile-menu-toggle.active span:nth-child(1) {
+                transform: translateY(7px) rotate(45deg);
+            }
+            .mobile-menu-toggle.active span:nth-child(2) {
+                opacity: 0;
+            }
+            .mobile-menu-toggle.active span:nth-child(3) {
+                transform: translateY(-7px) rotate(-45deg);
+            }
+            .nav-icons {
+                position: absolute;
+                right: 16px;
+                top: 50%;
+                transform: translateY(-50%);
+                gap: 10px;
+            }
+            .nav-list {
+                position: fixed;
+                top: 0;
+                left: -78%;
+                width: 78%;
+                max-width: 320px;
+                height: 100vh;
+                background: rgba(255,255,255,0.98);
+                box-shadow: 3px 0 16px rgba(0,0,0,0.12);
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: stretch;
+                gap: 0;
+                padding: 78px 20px 30px;
+                z-index: 1001;
+                overflow-y: auto;
+                transition: left 0.3s ease;
+            }
+            .nav-list.mobile-open {
+                left: 0;
+            }
+            .mobile-menu-mask {
+                display: block;
+                position: fixed;
+                inset: 0;
+                background: rgba(0,0,0,0.35);
+                opacity: 0;
+                visibility: hidden;
+                pointer-events: none;
+                transition: all 0.3s ease;
+                z-index: 1000;
+            }
+            .mobile-menu-mask.active {
+                opacity: 1;
+                visibility: visible;
+                pointer-events: auto;
+            }
+            .nav-item {
+                width: 100%;
+                padding: 14px 0;
+                border-bottom: 1px solid #eee;
+                font-size: 15px;
+                text-align: left;
+                color: #333;
+                text-shadow: none;
+            }
+            .nav-item:hover {
+                color: #007bff;
+                opacity: 1;
+            }
+            .submenu {
+                position: static;
+                min-width: 100%;
+                box-shadow: none;
+                background: #f7f7f7;
+                margin-top: 10px;
+                border-radius: 6px;
+                overflow: hidden;
+                display: none;
+            }
+            .nav-item:hover .submenu {
+                display: none;
+            }
+            .nav-item.mobile-submenu-open .submenu {
+                display: block;
+            }
+            .submenu li {
+                font-size: 13px;
+                padding: 11px 14px;
+                border-bottom: 1px solid #eee;
+            }
+            .nav-list .submenu,
+            .nav-list .submenu li,
+            .nav-list .submenu a {
+                color: #333;
+                text-shadow: none;
+            }
+            .banner {
+                margin-top: 0;
+                height: calc(100vw / var(--banner-ratio));
+                aspect-ratio: var(--banner-ratio) / 1;
+            }
+            .banner-slide {
+                padding: 0 22px;
+                padding-left: 5%;
+                justify-content: flex-start;
+                align-items: center;
+                text-align: left;
+            }
+            .banner-content {
+                width: 100%;
+                max-width: 330px;
+                margin: 0;
+                text-align: left;
+                position: relative;
+                z-index: 10;
+            }
+            .banner-tag {
+                margin-left: 0;
+                margin-right: 0;
+            }
+            .banner-title {
+                font-size: 20px;
+                line-height: 1.45;
+                text-align: left;
+            }
+            .banner-desc {
+                font-size: 13px;
+                text-align: left;
+            }
+            .banner-img {
+                top: 0;
+                left: 0;
+                right: auto;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                object-position: center center;
+            }
+            .banner-dots {
+                bottom: 18px;
+            }
+            .section {
+                padding: 44px 16px;
+            }
+            .section-title {
+                text-align: center;
+                margin-bottom: 28px;
+            }
+            .section-title h2,
+            .section-title p {
+                text-align: center;
+            }
+            .section-title h2 {
+                font-size: 21px;
+            }
+            .section-title p {
+                font-size: 12px;
+                letter-spacing: 0.5px;
+            }
+            .product-tabs,
+            .about-tabs,
+            .news-tabs {
+                width: 100%;
+                justify-content: center;
+                align-items: center;
+                flex-wrap: wrap;
+                gap: 12px 18px;
+                text-align: center;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .product-tab,
+            .about-tab,
+            .news-tab {
+                text-align: center;
+                font-size: 13px;
+            }
+            .product-group {
+                width: 100%;
+            }
+            .product-grid,
+            .product-more-items {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 14px;
+                width: 100%;
+            }
+            .product-card {
+                padding: 14px 8px;
+                text-align: center;
+            }
+            .product-card img {
+                width: 100%;
+                max-width: 138px;
+                height: 112px;
+                object-fit: contain;
+                margin: 0 auto 10px;
+            }
+            .product-name {
+                font-size: 12px;
+                line-height: 1.45;
+            }
+            .product-model {
+                font-size: 10px;
+                line-height: 1.35;
+            }
+            .about-content {
+                max-width: 100%;
+                text-align: center;
+                font-size: 13px;
+                line-height: 1.75;
+            }
+            .video-container {
+                width: 100%;
+            }
+            .news-grid,
+            .news-more-items {
+                grid-template-columns: 1fr;
+                width: 100%;
+                gap: 18px;
+            }
+            .news-card {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                gap: 10px;
+            }
+            .news-img {
+                width: 100%;
+                max-width: 360px;
+                height: 190px;
+                margin: 0 auto;
+            }
+            .news-content {
+                width: 100%;
+                align-items: center;
+                text-align: center;
+            }
+            .news-title,
+            .news-desc,
+            .news-date {
+                text-align: center;
+            }
+            .quick-links {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 14px;
+                padding: 34px 16px;
+            }
+            .quick-link-item {
+                padding: 18px 10px;
+            }
+            .footer {
+                padding: 34px 16px 22px;
+            }
+            .footer-container {
+                max-width: 680px;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                align-items: flex-start;
+                gap: 24px 18px;
+                margin: 0 auto 24px;
+            }
+            .footer-middle {
+                order: 1;
+                width: 100%;
+            }
+            .footer-links {
+                width: 100%;
+                max-width: 620px;
+                margin: 0 auto;
+                display: grid;
+                grid-template-columns: repeat(5, minmax(54px, 1fr));
+                gap: 10px;
+                text-align: center;
+                justify-items: center;
+                align-items: start;
+                font-size: 10px;
+                line-height: 1.65;
+            }
+            .footer-links > div {
+                width: 100%;
+                min-width: 0;
+                text-align: center;
+            }
+            .footer-links p {
+                text-align: center;
+                word-break: break-all;
+            }
+            .footer-left {
+                order: 2;
+                flex: 1 1 250px;
+                max-width: 360px;
+                text-align: center;
+            }
+            .footer-logo {
+                justify-content: center;
+                margin-bottom: 12px;
+            }
+            .footer-contact {
+                text-align: center;
+                font-size: 11px;
+                line-height: 1.75;
+            }
+            .footer-right {
+                order: 3;
+                flex: 0 1 240px;
+                max-width: 260px;
+            }
+            .footer-qrcodes {
+                justify-content: center;
+                align-items: flex-start;
+                gap: 14px;
+            }
+            .qrcode-item {
+                text-align: center;
+            }
+            .qrcode-item img {
+                width: 76px;
+                height: 76px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .qrcode-text {
+                font-size: 10px;
+                line-height: 1.35;
+            }
+            .footer-bottom {
+                font-size: 10px;
+                line-height: 1.65;
+                text-align: center;
+                padding-top: 18px;
+            }
+            .sidebar {
+                right: 10px;
+                gap: 8px;
+                display: none;
+            }
+            .back-to-top {
+                right: 14px;
+                bottom: 18px;
+                width: 38px;
+                height: 38px;
+                border-radius: 50%;
+            }
+        }
+        @media (max-width: 420px) {
+            .nav-list {
+                width: 82%;
+                left: -82%;
+            }
+            .banner {
+                height: calc(100vw / var(--banner-ratio));
+                aspect-ratio: var(--banner-ratio) / 1;
+            }
+            .banner-title {
+                font-size: 18px;
+            }
+            .product-grid,
+            .product-more-items {
+                gap: 12px;
+            }
+            .product-card img {
+                max-width: 124px;
+                height: 102px;
+            }
+            .footer-container {
+                gap: 22px 12px;
+            }
+            .footer-links {
+                grid-template-columns: repeat(5, minmax(48px, 1fr));
+                gap: 6px;
+                font-size: 9px;
+            }
+            .footer-links > div > p:first-child {
+                font-size: 11px !important;
+            }
+            .footer-left {
+                flex-basis: 100%;
+                max-width: 100%;
+            }
+            .footer-right {
+                flex-basis: 100%;
+                max-width: 100%;
+            }
+            .footer-qrcodes {
+                gap: 18px;
+            }
+        }
+		.banner-content {
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="nav-container">
+            <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="打开导航菜单" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="logo">
+                <span class="logo-text">德洋恩普<br><small>DYEP ELECTRONIC</small></span>
+            </div>
+            <ul class="nav-list">
+                <li class="nav-item"><a href="#banner">首页</a></li>
+                <li class="nav-item">
+                    关于德洋恩普
+                    <ul class="submenu">
+                        <li><a href="#">公司简介</a></li>
+                        <li><a href="#">发展历程</a></li>
+                        <li><a href="#">荣誉资质</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    产品中心
+                    <ul class="submenu">
+                        <li><a href="#product">磁力锁</a></li>
+                        <li><a href="#">电插锁</a></li>
+                        <li><a href="#">电控锁</a></li>
+                        <li><a href="#">门禁出门按钮</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item"><a href="#">招商代理</a></li>
+                <li class="nav-item"><a href="#">工程案例</a></li>
+                <li class="nav-item"><a href="#">媒体中心</a></li>
+                <li class="nav-item"><a href="#">服务中心</a></li>
+                <li class="nav-item"><a href="#footer">联系我们</a></li>
+            </ul>
+            <div class="nav-icons">
+                <a href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></a>
+                <a href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg></a>
+            </div>
+        </div>
+        <div class="mobile-menu-mask" id="mobileMenuMask"></div>
+    </header>
+
+    <section class="banner" id="banner">
+        <div class="banner-slide active">
+            <div class="banner-content">
+                <span class="banner-tag">新品首发</span>
+                <h1 class="banner-title">602人脸指纹锁<br>指纹+人脸双功能<br>玻璃门专用锁</h1>
+                <p class="banner-desc">简易安装免打孔</p>
+                <button class="btn">了解更多 ></button>
+            </div>
+            <img src="轮播图1.png" alt="产品图" class="banner-img">
+        </div>
+        <div class="banner-slide">
+            <div class="banner-content">
+                <span class="banner-tag">热门产品</span>
+                <h1 class="banner-title">电插锁系列<br>安全稳定<br>门禁首选</h1>
+                <p class="banner-desc">纯铜线圈，不锈钢锁舌</p>
+                <button class="btn">了解更多 ></button>
+            </div>
+            <img src="轮播图2.png" alt="产品图" class="banner-img">
+        </div>
+        <div class="banner-slide">
+            <div class="banner-content">
+                <span class="banner-tag">明星产品</span>
+                <h1 class="banner-title">门禁机系列<br>动态人脸<br>考勤报表</h1>
+                <p class="banner-desc">适用于各种门禁系统</p>
+                <button class="btn">了解更多 ></button>
+            </div>
+            <img src="轮播图3.png" alt="产品图" class="banner-img">
+        </div>
+		 <div class="banner-slide">
+            <div class="banner-content">
+                <span class="banner-tag">明星产品</span>
+                <h1 class="banner-title">磁力锁系列<br>防水、防剩磁<br>强劲稳定吸力</h1>
+                <p class="banner-desc">适用于各种门禁系统</p>
+                <button class="btn">了解更多 ></button>
+            </div>
+            <img src="轮播图4.png" alt="产品图" class="banner-img">
+        </div>
+		 <div class="banner-slide">
+            <div class="banner-content">
+                <span class="banner-tag">明星产品</span>
+                <h1 class="banner-title">门禁套装系列<br>无线套装<br>布线套装</h1>
+                <p class="banner-desc">适用于各种门禁系统</p>
+                <button class="btn">了解更多 ></button>
+            </div>
+            <img src="轮播图5.png" alt="产品图" class="banner-img">
+        </div>
+        <div class="banner-dots"></div>
+    </section>
+
+    <!-- 产品中心（三组标签+三组不同产品） -->
+    <section class="section" id="product">
+        <div class="section-title">
+            <h2>产品中心</h2>
+            <p>PRODUCTS CENTER</p>
+        </div>
+        <div class="product-tabs">
+            <span class="product-tab active" data-tab="1">磁力锁</span>
+            <span class="product-tab" data-tab="2">指纹锁</span>
+            <span class="product-tab" data-tab="3">电插锁</span>
+            <span class="product-tab" data-tab="4">门禁套装</span>
+        </div>
+
+        <!-- 第一组：磁力锁 -->
+        <div class="product-group active" id="group1">
+            <div class="product-grid">
+                <div class="product-card">
+                    <img src="1.png" alt="产品">
+                    <p class="product-name">60kg 明装磁力锁</p>
+                    <p class="product-model">Model:DY-60MZ</p>
+                </div>
+                <div class="product-card">
+                    <img src="2.png" alt="产品">
+                    <p class="product-name">180kg 明装磁力锁</p>
+                    <p class="product-model">Model:DY-180MZ</p>
+                </div>
+                <div class="product-card">
+                    <img src="3.png" alt="产品">
+                    <p class="product-name">180kg 暗装磁力锁</p>
+                    <p class="product-model">Model:DY-180AZ</p>
+                </div>
+                <div class="product-card">
+                    <img src="4.png" alt="产品">
+                    <p class="product-name">180kg 双门磁力锁</p>
+                    <p class="product-model">Model:DY-180SM</p>
+                </div>
+            </div>
+            <div class="product-more-items" id="more1">
+                <div class="product-card">
+                    <img src="5.png" alt="产品">
+                    <p class="product-name">280kg 明装磁力锁</p>
+                    <p class="product-model">Model:DY-280MZ</p>
+                </div>
+                <div class="product-card">
+                    <img src="6.png" alt="产品">
+                    <p class="product-name">280kg 暗装磁力锁</p>
+                    <p class="product-model">Model:DY-280AZ</p>
+                </div>
+                <div class="product-card">
+                    <img src="7.png" alt="产品">
+                    <p class="product-name">280kg 双门磁力锁</p>
+                    <p class="product-model">Model:DY-280SM</p>
+                </div>
+                <div class="product-card">
+                    <img src="8.png" alt="产品">
+                    <p class="product-name">350kg 明装磁力锁</p>
+                    <p class="product-model">Model:DY-350MZ</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第二组：指纹锁（全部换图） -->
+        <div class="product-group" id="group2">
+            <div class="product-grid">
+                <div class="product-card">
+                    <img src="9.png" alt="产品">
+                    <p class="product-name">601霸王钩指纹锁</p>
+                    <p class="product-model">Model:DY-ZWS</p>
+                </div>
+                <div class="product-card">
+                    <img src="10.png" alt="产品">
+                    <p class="product-name">602霸王钩人脸锁</p>
+                    <p class="product-model">Model:DY-RLS</p>
+                </div>
+                <div class="product-card">
+                    <img src="11.png" alt="产品">
+                    <p class="product-name">802机械钥匙人脸锁</p>
+                    <p class="product-model">Model:DY-RLS</p>
+                </div>
+                <div class="product-card">
+                    <img src="12.png" alt="产品">
+                    <p class="product-name">109B霸王钩指纹锁</p>
+                    <p class="product-model">Model:DY-ZWS</p>
+                </div>
+            </div>
+            <div class="product-more-items" id="more2">
+                <div class="product-card">
+                    <img src="13.png" alt="产品">
+                    <p class="product-name">1208B霸王钩指纹锁</p>
+                    <p class="product-model">Model:DY-ZWS</p>
+                </div>
+                <div class="product-card">
+                    <img src="14.png" alt="产品">
+                    <p class="product-name">108人脸指纹锁</p>
+                    <p class="product-model">Model:DY-ZWS</p>
+                </div>
+                <div class="product-card">
+                    <img src="15.png" alt="产品">
+                    <p class="product-name">618指纹锁</p>
+                    <p class="product-model">Model:DY-ZWS</p>
+                </div>
+                <div class="product-card">
+                    <img src="16.png" alt="产品">
+                    <p class="product-name">808H指纹锁</p>
+                    <p class="product-model">Model:DY-ZWS</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第三组：电插锁（全部换图） -->
+        <div class="product-group" id="group3">
+            <div class="product-grid">
+                <div class="product-card">
+                    <img src="17.png" alt="产品">
+                    <p class="product-name">LX两线常温电插锁</p>
+                    <p class="product-model">Model:DY-DCS</p>
+                </div>
+                <div class="product-card">
+                    <img src="18.png" alt="产品">
+                    <p class="product-name">两线低温延时电插锁(带灯)</p>
+                    <p class="product-model">Model:DY-DCS</p>
+                </div>
+                <div class="product-card">
+                    <img src="19.png" alt="产品">
+                    <p class="product-name">170A四线迷你电插锁</p>
+                    <p class="product-model">Model:DY-DCS</p>
+                </div>
+                <div class="product-card">
+                    <img src="20.png" alt="产品">
+                    <p class="product-name">120微型电插锁</p>
+                    <p class="product-model">Model:DY-DCS</p>
+                </div>
+            </div>
+            <div class="product-more-items" id="more3">
+                <div class="product-card">
+                    <img src="21.png" alt="产品">
+                    <p class="product-name">铝六线窄板电插锁(常闭)</p>
+                    <p class="product-model">Model:DY-DCS</p>
+                </div>
+                <div class="product-card">
+                    <img src="22.png" alt="产品">
+                    <p class="product-name">七八九线窄板电插锁</p>
+                    <p class="product-model">Model:DY-DCS</p>
+                </div>
+                <div class="product-card">
+                    <img src="23.png" alt="产品">
+                    <p class="product-name">218静音电插锁(带定位)</p>
+                    <p class="product-model">Model:DY-DCS</p>
+                </div>
+                <div class="product-card">
+                    <img src="24.png" alt="产品">
+                    <p class="product-name">150M明装电插锁</p>
+                    <p class="product-model">Model:DY-DCS</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第四组：门禁套装（全部换图） -->
+        <div class="product-group" id="group4">
+            <div class="product-grid">
+                <div class="product-card">
+                    <img src="25.png" alt="产品">
+                    <p class="product-name">D5S门禁套装</p>
+                    <p class="product-model">Model:DY-MJTZ</p>
+                </div>
+                <div class="product-card">
+                    <img src="26.png" alt="产品">
+                    <p class="product-name">D4S门禁套装</p>
+                    <p class="product-model">Model:DY-MJTZ</p>
+                </div>
+                <div class="product-card">
+                    <img src="27.png" alt="产品">
+                    <p class="product-name">D2S无指纹</p>
+                    <p class="product-model">Model:DY-MJTZ</p>
+                </div>
+                <div class="product-card">
+                    <img src="28.png" alt="产品">
+                    <p class="product-name">D2S门禁套装</p>
+                    <p class="product-model">Model:DY-MJTZ</p>
+                </div>
+            </div>
+            <div class="product-more-items" id="more4">
+                <div class="product-card">
+                    <img src="29.png" alt="产品">
+                    <p class="product-name">D1S门禁套装</p>
+                    <p class="product-model">Model:DY-MJTZ</p>
+                </div>
+                <div class="product-card">
+                    <img src="30.png" alt="产品">
+                    <p class="product-name">D5门禁套装</p>
+                    <p class="product-model">Model:DY-MJTZ</p>
+                </div>
+                <div class="product-card">
+                    <img src="31.png" alt="产品">
+                    <p class="product-name">D3门禁套装</p>
+                    <p class="product-model">Model:DY-MJTZ</p>
+                </div>
+                <div class="product-card">
+                    <img src="32.png" alt="产品">
+                    <p class="product-name">D0门禁套装</p>
+                    <p class="product-model">Model:DY-MJTZ</p>
+                </div>
+            </div>
+        </div>
+
+        <button class="more-btn" id="productMoreBtn">查看更多</button>
+    </section>
+
+    <section class="section about-section">
+        <div class="section-title">
+            <h2>关于德洋恩普</h2>
+            <p>ABOUT US</p>
+        </div>
+        <div class="about-tabs">
+            <span class="about-tab" data-tab="1">公司简介</span>
+            <span class="about-tab" data-tab="2">发展历程</span>
+            <span class="about-tab active" data-tab="3">精彩视频</span>
+            <span class="about-tab" data-tab="4">客户采访</span>
+            <span class="about-tab" data-tab="5">展会报道</span>
+        </div>
+        
+        <div class="about-content" data-content="1">
+            深圳市德洋恩普电子有限公司是专业从事门禁电锁产品研发、生产、销售为一体的高新技术企业。公司拥有先进的生产设备、专业的研发团队和完善的质量控制体系，产品涵盖磁力锁、电插锁、电控锁、门禁电源、出门按钮等全系列门禁配套产品，广泛应用于写字楼、小区、医院、学校、工厂等各类场所。
+        </div>
+        <div class="about-content" data-content="2">
+            2010年：公司成立，专注门禁电锁研发<br>
+            2013年：推出首款防水磁力锁，获得市场认可<br>
+            2016年：生产线升级，年产量突破百万台<br>
+            2020年：通过ISO9001质量体系认证<br>
+            2025年：产品远销全球50多个国家和地区
+        </div>
+        <div class="about-content active" data-content="3">
+            <div class="video-container">
+                <video controls poster="https://via.placeholder.com/600x340">
+                    <source src="#" type="video/mp4">
+                    您的浏览器不支持视频播放
+                </video>
+            </div>
+        </div>
+        <div class="about-content" data-content="4">
+            德洋恩普产品质量稳定，售后服务完善，是我们长期合作的首选供应商。产品安装简单，使用方便，客户满意度极高。
+        </div>
+        <div class="about-content" data-content="5">
+            公司每年参加全球各大安防展会，包括英国IFSEC、迪拜INTERSEC、美国ISC West等，向世界展示中国安防科技实力。
+        </div>
+        
+        <button class="more-btn" style="margin-top:30px;">查看更多</button>
+    </section>
+
+    <section class="section news-section">
+        <div class="section-title">
+            <h2>新闻中心</h2>
+            <p>NEWS CENTER</p>
+        </div>
+        <div class="news-tabs">
+            <span class="news-tab active" data-tab="1">公司动态</span>
+            <span class="news-tab" data-tab="2">行业新闻</span>
+            <span class="news-tab" data-tab="3">公司展会</span>
+        </div>
+        <div class="news-grid">
+            <div class="news-card">
+                <img src="33.png" alt="新闻图" class="news-img">
+                <div class="news-content">
+                    <div>
+                        <h3 class="news-title">德洋恩普2025第三届世界数字城市大会，斩获3项大奖</h3>
+                        <p class="news-desc">2025年10月28日至31日，由中国国际数字产业博览会暨中国电子信息行业协会... 中国国际信息技术合作协会、中国智能建筑工程协会、智慧城市产学研协会主办...</p>
+                    </div>
+                    <span class="news-date">2025-10-28</span>
+                </div>
+            </div>
+            <div class="news-card">
+                <img src="34.png" alt="新闻图" class="news-img">
+                <div class="news-content">
+                    <div>
+                        <h3 class="news-title">中国“锁”向披靡！德洋恩普硬核科技，惊艳英国安防展</h3>
+                        <p class="news-desc">2026年英国国际安防展（IFSEC）2026年4月28日-30日，全球安防行业的目光再次聚焦英国伦敦！在2026年4月...</p>
+                    </div>
+                    <span class="news-date">2026-04-30</span>
+                </div>
+            </div>
+        </div>
+        <div class="news-more-items">
+            <div class="news-card">
+                <img src="35.png" alt="新闻图" class="news-img">
+                <div class="news-content">
+                    <div>
+                        <h3 class="news-title">intertek 美国门禁实验室领导来访我司拉斯维加斯展位</h3>
+                        <p class="news-desc">德洋恩普系列产品率先通过UL294/1034认证</p>
+                    </div>
+                    <span class="news-date">2026-03-27</span>
+                </div>
+            </div>
+            <div class="news-card">
+                <img src="36.png" alt="新闻图" class="news-img">
+                <div class="news-content">
+                    <div>
+                        <h3 class="news-title">锁定安全：德洋恩普电子门禁解决方案亮相迪拜 Intersec</h3>
+                        <p class="news-desc">当地时间2026年1月12日至14日，中东地区规模最大的安防展会—迪拜安防展（INTERSEC）在迪拜世贸...</p>
+                    </div>
+                    <span class="news-date">2026-01-15</span>
+                </div>
+            </div>
+        </div>
+        <button class="more-btn" id="newsMoreBtn" style="margin-top:30px;">查看更多</button>
+    </section>
+
+    <section class="quick-links">
+        <div class="quick-link-item">
+            <div class="quick-link-icon"><svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></div>
+            <p class="quick-link-title">订阅邮件</p>
+            <p class="quick-link-desc">定时发送邮件期刊</p>
+        </div>
+        <div class="quick-link-item">
+            <div class="quick-link-icon"><svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg></div>
+            <p class="quick-link-title">产品手册</p>
+            <p class="quick-link-desc">PDF格式最全手册</p>
+        </div>
+        <div class="quick-link-item">
+            <div class="quick-link-icon"><svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg></div>
+            <p class="quick-link-title">下载中心</p>
+            <p class="quick-link-desc">产品资料下载专区</p>
+        </div>
+        <div class="quick-link-item">
+            <div class="quick-link-icon"><svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg></div>
+            <p class="quick-link-title">常见问题</p>
+            <p class="quick-link-desc">如何使用产品</p>
+        </div>
+    </section>
+
+    <footer class="footer" id="footer">
+        <div class="footer-container">
+            <div class="footer-left">
+                <div class="footer-logo">
+                    <img src="1.png" alt="Logo">
+                    <span class="footer-logo-text">德洋恩普</span>
+                </div>
+                <div class="footer-contact">
+                    <p>联系人：13570803312（周小姐）</p>
+                    <p>             13510121105（周总）</p>
+                    <p>广东省东莞市凤岗镇浸校塘汇鸿工业园G栋一二三楼</p>
+                </div>
+            </div>
+            <div class="footer-middle">
+                <div class="footer-links">
+                    <div>
+                        <p style="color:#fff; margin-bottom:8px; font-size:12px;">产品中心</p>
+                        <p><a href="#">磁力锁</a></p>
+                        <p><a href="#">电插锁</a></p>
+                        <p><a href="#">电控锁</a></p>
+                        <p><a href="#">门禁出门按钮</a></p>
+                        <p><a href="#">门禁电源</a></p>
+                    </div>
+                    <div>
+                        <p style="color:#fff; margin-bottom:8px; font-size:12px;">关于我们</p>
+                        <p><a href="#">企业文化</a></p>
+                        <p><a href="#">发展历程</a></p>
+                        <p><a href="#">生产基地</a></p>
+                        <p><a href="#">合作机构</a></p>
+                        <p><a href="#">公司视频</a></p>
+                        <p><a href="#">公司资质</a></p>
+                    </div>
+                    <div>
+                        <p style="color:#fff; margin-bottom:8px; font-size:12px;">媒体中心</p>
+                        <p><a href="#">新闻动态</a></p>
+                        <p><a href="#">行业资讯</a></p>
+                        <p><a href="#">公司展会</a></p>
+                        <p><a href="#">公司视频</a></p>
+                        <p><a href="#">安装视频</a></p>
+                    </div>
+                    <div>
+                        <p style="color:#fff; margin-bottom:8px; font-size:12px;">服务中心</p>
+                        <p><a href="#">常见问题</a></p>
+                        <p><a href="#">保修说明</a></p>
+                        <p><a href="#">下载中心</a></p>
+                        <p><a href="#">安装视频</a></p>
+                    </div>
+                    <div>
+                        <p style="color:#fff; margin-bottom:8px; font-size:12px;">其他</p>
+                        <p><a href="#">邮件订阅</a></p>
+                        <p><a href="#">留言反馈</a></p>
+                        <p><a href="#">网站地图</a></p>
+                        <p><a href="#">友情链接</a></p>
+                        <p><a href="#">法律声明</a></p>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-right">
+                <div class="footer-qrcodes">
+                    <div class="qrcode-item">
+                        <img src="37.png" alt="公众号">
+                        <p class="qrcode-text">关注德洋恩普公众号</p>
+                    </div>
+                    <div class="qrcode-item">
+                        <img src="38.png" alt="企业号">
+                        <p class="qrcode-text">关注德洋恩普企业号</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 德洋恩普. 全球领先的电锁器材制造商及著名安防品牌. 有任何疑问请联系: DYEN@DYEN.cn</p>
+            <p>粤ICP备11072683号</p>
+        </div>
+    </footer>
+
+    <div class="sidebar">
+        <div class="sidebar-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg></div>
+        <div class="sidebar-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg></div>
+        <div class="sidebar-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg></div>
+    </div>
+
+    <div class="back-to-top" id="backToTop">↑</div>
+
+    <script>
+        // 轮播图
+        const bannerSlides = document.querySelectorAll('.banner-slide');
+        const dotsContainer = document.querySelector('.banner-dots');
+        let currentIndex = 0;
+        let autoInterval;
+
+        function generateDots() {
+            dotsContainer.innerHTML = '';
+            for (let i = 0; i < bannerSlides.length; i++) {
+                const dot = document.createElement('span');
+                dot.classList.add('dot');
+                if (i === 0) dot.classList.add('active');
+                dot.dataset.index = i;
+                dot.addEventListener('click', () => {
+                    clearInterval(autoInterval);
+                    showSlide(i);
+                    startAutoPlay();
+                });
+                dotsContainer.appendChild(dot);
+            }
+        }
+
+        function showSlide(index) {
+            bannerSlides.forEach((slide, i) => {
+                slide.classList.remove('active');
+                const dot = dotsContainer.children[i];
+                if (dot) dot.classList.remove('active');
+            });
+            bannerSlides[index].classList.add('active');
+            if (dotsContainer.children[index]) dotsContainer.children[index].classList.add('active');
+            currentIndex = index;
+        }
+
+        function startAutoPlay() {
+            if (autoInterval) clearInterval(autoInterval);
+            autoInterval = setInterval(() => {
+                currentIndex = (currentIndex + 1) % bannerSlides.length;
+                showSlide(currentIndex);
+            }, 5000);
+        }
+
+        generateDots();
+        startAutoPlay();
+
+        // 滚动渐入
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('show');
+                }
+            });
+        }, observerOptions);
+        document.querySelectorAll('.product-card, .video-container, .news-card, .quick-link-item').forEach(el => {
+            observer.observe(el);
+        });
+
+        // 回到顶部
+        const backToTopBtn = document.getElementById('backToTop');
+        backToTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // 导航滚动
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('.header');
+            header.style.background = window.scrollY > 100 ? 'rgba(0,0,0,0.42)' : 'rgba(0,0,0,0.18)';
+            header.style.boxShadow = window.scrollY > 100 ? '0 2px 10px rgba(0,0,0,0.18)' : 'none';
+        });
+
+        // 平滑跳转
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                const target = document.querySelector(targetId);
+                if (target) {
+                    window.scrollTo({ top: target.offsetTop - 65, behavior: 'smooth' });
+                }
+            });
+        });
+
+        // ========== 移动端导航菜单 ==========
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const mobileMenuMask = document.getElementById('mobileMenuMask');
+        const navList = document.querySelector('.nav-list');
+
+        function closeMobileMenu() {
+            if (!mobileMenuToggle || !mobileMenuMask || !navList) return;
+            mobileMenuToggle.classList.remove('active');
+            mobileMenuToggle.setAttribute('aria-expanded', 'false');
+            navList.classList.remove('mobile-open');
+            mobileMenuMask.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function openMobileMenu() {
+            if (!mobileMenuToggle || !mobileMenuMask || !navList) return;
+            mobileMenuToggle.classList.add('active');
+            mobileMenuToggle.setAttribute('aria-expanded', 'true');
+            navList.classList.add('mobile-open');
+            mobileMenuMask.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        if (mobileMenuToggle && mobileMenuMask && navList) {
+            mobileMenuToggle.addEventListener('click', () => {
+                navList.classList.contains('mobile-open') ? closeMobileMenu() : openMobileMenu();
+            });
+            mobileMenuMask.addEventListener('click', closeMobileMenu);
+            document.querySelectorAll('.nav-item').forEach(item => {
+                const submenu = item.querySelector('.submenu');
+                if (submenu) {
+                    item.addEventListener('click', (e) => {
+                        if (window.innerWidth > 768) return;
+                        if (e.target.closest('.submenu a')) {
+                            closeMobileMenu();
+                            return;
+                        }
+                        e.preventDefault();
+                        item.classList.toggle('mobile-submenu-open');
+                    });
+                }
+            });
+            document.querySelectorAll('.nav-list a').forEach(link => {
+                link.addEventListener('click', () => {
+                    if (window.innerWidth <= 768 && !link.closest('.submenu')) closeMobileMenu();
+                });
+            });
+            window.addEventListener('resize', () => {
+                if (window.innerWidth > 768) closeMobileMenu();
+            });
+        }
+
+        // ========== 核心：产品标签切换（整组替换） ==========
+        const productTabs = document.querySelectorAll('.product-tab');
+        const productGroups = document.querySelectorAll('.product-group');
+
+        productTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // 1. 所有标签取消active
+                productTabs.forEach(t => t.classList.remove('active'));
+                // 2. 当前标签加active
+                tab.classList.add('active');
+                // 3. 所有产品组隐藏
+                productGroups.forEach(g => g.classList.remove('active'));
+                // 4. 显示对应产品组
+                const tabId = tab.getAttribute('data-tab');
+                document.getElementById('group' + tabId).classList.add('active');
+                // 5. 重置“查看更多”状态
+                resetMoreBtn();
+            });
+        });
+
+        // ========== 产品查看更多/收起 ==========
+        const productMoreBtn = document.getElementById('productMoreBtn');
+        let currentGroupId = '1'; // 默认第一组
+        let expandedState = { 1: false, 2: false, 3: false, 4: false }; // 四组独立状态
+
+        // 重置按钮文字
+        function resetMoreBtn() {
+            currentGroupId = document.querySelector('.product-group.active').id.replace('group', '');
+            productMoreBtn.textContent = expandedState[currentGroupId] ? '收起更多' : '查看更多';
+            // 隐藏所有more区域
+            document.querySelectorAll('.product-more-items').forEach(el => el.classList.remove('show'));
+            // 显示当前组more区域（如果已展开）
+            if (expandedState[currentGroupId]) {
+                document.getElementById('more' + currentGroupId).classList.add('show');
+            }
+        }
+
+        // 查看更多按钮点击
+        productMoreBtn.addEventListener('click', () => {
+            currentGroupId = document.querySelector('.product-group.active').id.replace('group', '');
+            expandedState[currentGroupId] = !expandedState[currentGroupId];
+            document.getElementById('more' + currentGroupId).classList.toggle('show', expandedState[currentGroupId]);
+            productMoreBtn.textContent = expandedState[currentGroupId] ? '收起更多' : '查看更多';
+        });
+
+        // ========== 关于我们标签切换 ==========
+        const aboutTabs = document.querySelectorAll('.about-tab');
+        const aboutContents = document.querySelectorAll('.about-content');
+        aboutTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabId = tab.dataset.tab;
+                aboutTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                aboutContents.forEach(content => {
+                    content.classList.remove('active');
+                    if (content.dataset.content === tabId) {
+                        content.classList.add('active');
+                    }
+                });
+            });
+        });
+
+        // ========== 新闻标签切换 ==========
+        const newsTabs = document.querySelectorAll('.news-tab');
+        newsTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                newsTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+            });
+        });
+
+        // ========== 新闻查看更多 ==========
+        const newsMoreBtn = document.getElementById('newsMoreBtn');
+        const newsMoreItems = document.querySelector('.news-more-items');
+        let newsExpanded = false;
+        newsMoreBtn.addEventListener('click', () => {
+            newsExpanded = !newsExpanded;
+            newsMoreItems.classList.toggle('show', newsExpanded);
+            newsMoreBtn.textContent = newsExpanded ? '收起更多' : '查看更多';
+        });
+
+        // ========== 按钮点击反馈 ==========
+        document.querySelectorAll('.btn, .more-btn, .sidebar-btn, .back-to-top').forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 150);
+            });
+        });
+    </script>
+</body>
+</html>
